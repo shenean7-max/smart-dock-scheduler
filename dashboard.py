@@ -8,7 +8,7 @@ from src.cost import simulate_staffing_cost, simulate_optimized_cost
 
 # Sidebar Controls
 st.sidebar.header("🔧 Dashboard Controls")
-afe_productivity = st.sidebar.slider("AFE Units per Staffer", min_value=50, max_value=200, value=100)
+afe_productivity = st.sidebar.slider("AFE Units per Staffer", min_value=50, max_value=400, value=100)
 
 # Simulate hourly AFE volume
 hours = [f"{h}:00" for h in range(8, 20)]
