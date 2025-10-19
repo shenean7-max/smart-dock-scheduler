@@ -46,22 +46,14 @@ shift_length = st.sidebar.slider("Shift Length (hours)", min_value=4, max_value=
 # Hourly Rate
 hourly_rate = st.sidebar.slider("Hourly Rate per Staff ($)", min_value=15.0, max_value=50.0, value=25.0)
 
-# Apply filters
-filtered_df = df[
-    (df['timestamp'].dt.date >= start_date) &
-    (df['labor_share'] >= min_labor) &
-    (df['labor_share'] <= max_labor)
-]
+filtered_df = df[df['timestamp'].dt.date >= start_date]
+
 
 # Forecast
 if filtered_df.empty:
     st.warning("No data available for the selected filters. Please adjust the date or labor share range.")
     st.stop()
 forecast_df = forecast_truck_arrivals(filtered_df, future_hours=future_hours)
-
-# Add Staffing Logic 
-avg_labor_share = filtered_df['labor_share'].mean()
-staffing_df = recommend_staffing(forecast_df, avg_labor_share, shift_length=shift_length)
 
 # Compare actual dock staffing to recommended
 actual_dock_headcount = staffing_df["recommended_staff"].sum()
