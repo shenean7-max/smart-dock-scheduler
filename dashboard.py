@@ -10,6 +10,7 @@ from src.cost import simulate_staffing_cost, simulate_optimized_cost
 st.sidebar.header("🔧 Dashboard Controls")
 afe_productivity = st.sidebar.slider("AFE Units per Staffer", min_value=50, max_value=400, value=100)
 starting_headcount = st.sidebar.number_input("Total Available Staff", min_value=1, value=100)
+target_ppr = st.sidebar.number_input("Target Ship Dock PPR (Packages per Staffer)", min_value=50, max_value=500, value=150)
 
 # Simulate hourly AFE volume
 hours = [f"{h}:00" for h in range(8, 20)]
@@ -22,6 +23,12 @@ afe_df = pd.DataFrame({
 
 # Calculate AFE Staffing
 afe_df["Recommended Staffers"] = afe_df["AFE Volume"].apply(lambda v: int(np.ceil(v / afe_productivity)))
+
+# Calculate total AFE volume
+total_afe_volume = afe_df["AFE Volume"].sum()
+
+# Recommend ship dock headcount based on target PPR
+recommended_dock_headcount = int(np.ceil(total_afe_volume / target_ppr))
 
 # Load data
 df = load_dock_metrics("data/raw/dock_metrics.csv")
@@ -69,6 +76,17 @@ forecast_df = forecast_truck_arrivals(filtered_df, future_hours=future_hours)
 # Add Staffing Logic 
 avg_labor_share = filtered_df['labor_share'].mean()
 staffing_df = recommend_staffing(forecast_df, avg_labor_share, shift_length=shift_length)
+
+# Compare actual dock staffing to recommended
+actual_dock_headcount = staffing_df["recommended_staff"].sum()
+service_level = actual_dock_headcount / recommended_dock_headcount
+service_level = min(service_level, 1.0)  # Cap at 100%
+
+# 🚢 Ship Dock Staffing Recommendation
+st.subheader("🚢 Ship Dock Staffing Recommendation")
+st.metric("Recommended Dock Headcount (based on Target PPR)", f"{recommended_dock_headcount} staffers")
+st.metric("Actual Dock Headcount", f"{actual_dock_headcount} staffers")
+st.metric("Estimated Service Level", f"{service_level:.2%}")
 
 # Identify understaffed hours
 staffing_df['understaffed'] = staffing_df['recommended_staff'] < staffing_df['predicted_truck_arrivals']
@@ -143,8 +161,6 @@ combined_staffing["Total Staffers"] = (
 # Display Combined Staffing Chart
 with st.expander("📊 Total Staffing: Dock + AFE", expanded=False):
     st.line_chart(combined_staffing.set_index("timestamp")[["Total Staffers"]])
-
-
 
 # Convert filtered historical metrics to CSV
 historical_csv = filtered_df.to_csv(index=False).encode('utf-8')
