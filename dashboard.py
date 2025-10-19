@@ -26,9 +26,9 @@ afe_df["Recommended Staffers"] = afe_df["AFE Volume"].apply(lambda v: int(np.cei
 # Load data
 df = load_dock_metrics("data/raw/dock_metrics.csv")
 
-# Labor Share Filters
-min_labor = st.sidebar.slider("Minimum Labor Share", min_value=0.0, max_value=1.0, value=0.3)
-max_labor = st.sidebar.slider("Maximum Labor Share", min_value=0.0, max_value=1.0, value=1.0)
+# Labor Share Filters as Percentages
+min_labor_pct = st.sidebar.slider("Minimum Labor Share (%)", min_value=0, max_value=100, value=30)
+max_labor_pct = st.sidebar.slider("Maximum Labor Share (%)", min_value=0, max_value=100, value=100)
 
 # Convert to fraction for filtering
 min_labor = min_labor_pct / 100
@@ -39,7 +39,6 @@ min_headcount = int(starting_headcount * min_labor)
 max_headcount = int(starting_headcount * max_labor)
 
 st.caption(f"Headcount Range: {min_headcount} to {max_headcount} staffers based on selected labor share.")
-
 
 # Date Filter
 start_date = st.sidebar.date_input("Start Date", value=df['timestamp'].min().date())
