@@ -33,12 +33,6 @@ recommended_dock_headcount = int(np.ceil(total_afe_volume / target_ppr))
 # Load data
 df = load_dock_metrics("data/raw/dock_metrics.csv")
 
-# Calculate Headcount Range
-min_headcount = int(starting_headcount * min_labor)
-max_headcount = int(starting_headcount * max_labor)
-
-st.caption(f"Headcount Range: {min_headcount} to {max_headcount} staffers based on selected labor share.")
-
 # Date Filter
 start_date = st.sidebar.date_input("Start Date", value=df['timestamp'].min().date())
 
