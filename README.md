@@ -2,6 +2,7 @@
 [![Streamlit App](https://img.shields.io/badge/Live%20Demo-Streamlit-blue?logo=streamlit)](https://smart-dock-scheduler-5flpfuzsx7smkteaixb5dw.streamlit.app/)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Last Updated](https://img.shields.io/github/last-commit/shenean7-max/smart-dock-scheduler)
+![Data: Simulated](https://img.shields.io/badge/Data-Simulated-lightgrey)
 
 > Optimize dock staffing, reduce delays, and simulate cost impact—all in one interactive dashboard.
 
@@ -11,11 +12,13 @@ A data-driven dashboard for optimizing ship dock staffing at Amazon Fulfillment 
 
 ## 📊 Features
 
-- **Forecasting**: Predict truck arrivals using linear regression
-- **Staffing Recommendations**: Suggest optimal labor levels based on forecasted workload
-- **Cost Simulation**: Compare actual vs. optimized staffing costs
-- **Scenario Modeling**: Toggle between presets to explore operational trade-offs
-- **Service Level Impact**: Visualize how staffing affects throughput and delay risk
+- **Forecasting**: Predict truck arrivals using linear regression  
+- **Staffing Recommendations**: Suggest optimal labor levels based on forecasted workload  
+- **AFE Staffing Module**: Simulates volume from the Amazon Fulfillment Environment and recommends headcount based on productivity sliders  
+- **Combined Staffing View**: Merges dock and AFE staffing for total labor planning  
+- **Cost Simulation**: Compare actual vs. optimized staffing costs  
+- **Scenario Modeling**: Toggle between presets to explore operational trade-offs  
+- **Service Level Impact**: Visualize how staffing affects throughput and delay risk  
 - **Export Options**: Download charts and metrics for reporting
 
 ---
