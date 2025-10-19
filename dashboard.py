@@ -89,13 +89,13 @@ with st.expander("📊 Historical Dock Metrics", expanded=False):
 with st.expander("📦 AFE Volume and Staffing Recommendations", expanded=False):
     st.dataframe(afe_df)
 
-afe_chart_type = st.radio("Chart Type for AFE Staffing", ["Line Chart", "Bar Chart"])
-afe_chart_data = afe_df.set_index("Hour")[["Recommended Staffers"]]
+    afe_chart_type = st.radio("Chart Type for AFE Staffing", ["Line Chart", "Bar Chart"])
+    afe_chart_data = afe_df.set_index("Hour")[["Recommended Staffers"]]
 
-if afe_chart_type == "Line Chart":
-    st.line_chart(afe_chart_data)
-else:
-    st.bar_chart(afe_chart_data)
+    if afe_chart_type == "Line Chart":
+        st.line_chart(afe_chart_data)
+    else:
+        st.bar_chart(afe_chart_data)
 
 # Align timestamps if needed
 afe_df["timestamp"] = pd.date_range(start=start_date, periods=len(afe_df), freq="H")
