@@ -186,7 +186,6 @@ with st.expander("📊 Cost vs. Staffing Over Time", expanded=False):
         st.bar_chart(chart_data)
 
 # Export Optimized Cost Simulation
-optimized_csv = optimized_cost_df.to_csv(index=False).encode('utf-8')
 st.download_button(
     label="📥 Download Optimized Cost Simulation as CSV",
     data=optimized_csv,
