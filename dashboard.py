@@ -65,11 +65,13 @@ service_level = min(actual_dock_headcount / recommended_dock_headcount, 1.0)
 st.subheader("🚢 Ship Dock Staffing Recommendation")
 st.metric("Recommended Dock Headcount (based on Target PPR)", f"{recommended_dock_headcount} staffers")
 st.metric("Actual Dock Headcount", f"{actual_dock_headcount} staffers")
-st.metric("Estimated Service Level", f"{service_level:.2%}")
 
 # Color-coded service level metric for visual performance feedback
 service_color = "green" if service_level >= 0.9 else "orange" if service_level >= 0.75 else "red"
-st.metric("Estimated Service Level", f"{service_level:.2%}", delta=None, delta_color=service_color)
+st.metric("Estimated Service Level 🧮", f"{service_level:.2%}", delta=None, delta_color=service_color)
+
+# Summary interpretation of staffing adequacy
+st.write(f"Based on simulated AFE volume and forecasted truck arrivals, the dock is staffed at {service_level:.2%} of the recommended level.")
 
 # Flag understaffed hours
 staffing_df['understaffed'] = staffing_df['recommended_staff'] < staffing_df['predicted_truck_arrivals']
@@ -160,8 +162,12 @@ st.download_button("📥 Download Understaffed Alerts as CSV", data=alerts_csv, 
 # ---------------- Truck Arrivals Over Time ----------------
 with st.expander("📈 Truck Arrivals Over Time", expanded=False):
     arrivals_chart_type = st.radio("Select Chart Type", ["Line Chart", "Bar Chart"])
+
+    # Combine historical and forecasted truck arrivals into one DataFrame
     arrivals_df = pd.concat([
         df[['timestamp', 'truck_arrivals']].rename(columns={'truck_arrivals': 'arrivals'}),
         forecast_df.rename(columns={'predicted_truck_arrivals': 'arrivals'})
     ])
+
+    # Display chart based on user selection
     st.line_chart(arrivals_df.set_index('timestamp')) if arrivals_chart_type == "Line Chart" else st.bar_chart(arrivals_df.set_index('timestamp'))
