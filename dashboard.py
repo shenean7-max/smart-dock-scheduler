@@ -9,6 +9,7 @@ from src.cost import simulate_staffing_cost, simulate_optimized_cost
 # Sidebar Controls
 st.sidebar.header("🔧 Dashboard Controls")
 afe_productivity = st.sidebar.slider("AFE Units per Staffer", min_value=50, max_value=400, value=100)
+starting_headcount = st.sidebar.number_input("Total Available Staff", min_value=1, value=100)
 
 # Simulate hourly AFE volume
 hours = [f"{h}:00" for h in range(8, 20)]
@@ -28,6 +29,17 @@ df = load_dock_metrics("data/raw/dock_metrics.csv")
 # Labor Share Filters
 min_labor = st.sidebar.slider("Minimum Labor Share", min_value=0.0, max_value=1.0, value=0.3)
 max_labor = st.sidebar.slider("Maximum Labor Share", min_value=0.0, max_value=1.0, value=1.0)
+
+# Convert to fraction for filtering
+min_labor = min_labor_pct / 100
+max_labor = max_labor_pct / 100
+
+# Calculate Headcount Range
+min_headcount = int(starting_headcount * min_labor)
+max_headcount = int(starting_headcount * max_labor)
+
+st.caption(f"Headcount Range: {min_headcount} to {max_headcount} staffers based on selected labor share.")
+
 
 # Date Filter
 start_date = st.sidebar.date_input("Start Date", value=df['timestamp'].min().date())
