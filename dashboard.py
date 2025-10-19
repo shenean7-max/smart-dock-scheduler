@@ -85,13 +85,28 @@ st.title("Smart Dock Scheduler Dashboard")
 with st.expander("📊 Historical Dock Metrics", expanded=False):
     st.dataframe(filtered_df)
 
+# 📦 AFE Staffing Section Header
+st.markdown("### 📦 AFE Staffing Module")
+st.caption("Simulated AFE volume and productivity-based staffing recommendations. Adjust productivity to see staffing impact.")
+st.info("AFE (Amazon Fulfillment Environment) volume is simulated to demonstrate staffing needs based on productivity. Adjust the slider to explore impact.")
+
 # Display AFE Staffing Section
 with st.expander("📦 AFE Volume and Staffing Recommendations", expanded=False):
     st.dataframe(afe_df)
 
-    afe_chart_type = st.radio("Chart Type for AFE Staffing", ["Line Chart", "Bar Chart"])
-    afe_chart_data = afe_df.set_index("Hour")[["Recommended Staffers"]]
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        afe_chart_type = st.radio("Chart Type", ["Line Chart", "Bar Chart"])
+    with col2:
+        afe_csv = afe_df.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="📥 Export AFE Data",
+            data=afe_csv,
+            file_name="afe_staffing.csv",
+            mime="text/csv"
+        )
 
+    afe_chart_data = afe_df.set_index("Hour")[["Recommended Staffers"]]
     if afe_chart_type == "Line Chart":
         st.line_chart(afe_chart_data)
     else:
