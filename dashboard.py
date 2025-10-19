@@ -68,8 +68,10 @@ st.metric("Recommended Dock Headcount (based on Target PPR)", f"{recommended_doc
 st.metric("Actual Dock Headcount", f"{actual_dock_headcount} staffers")
 
 # Color-coded service level metric for visual performance feedback
+target_service_level = 0.9
+delta_value = service_level - target_service_level
 service_color = "green" if service_level >= 0.9 else "orange" if service_level >= 0.75 else "red"
-st.metric("Estimated Service Level 🧮", f"{service_level:.2%}", delta=None, delta_color=service_color)
+st.metric("Estimated Service Level 🧮", f"{service_level:.2%}", delta=f"{delta_value:.2%}", delta_color=service_color)
 
 # Summary interpretation of staffing adequacy
 st.write(f"Based on simulated AFE volume and forecasted truck arrivals, the dock is staffed at {service_level:.2%} of the recommended level.")
