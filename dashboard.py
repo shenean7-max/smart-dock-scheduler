@@ -43,6 +43,9 @@ st.caption(f"Headcount Range: {min_headcount} to {max_headcount} staffers based 
 # Date Filter
 start_date = st.sidebar.date_input("Start Date", value=df['timestamp'].min().date())
 
+# Align AFE timestamps with dock staffing
+afe_df["timestamp"] = pd.date_range(start=start_date, periods=len(afe_df), freq="H")
+
 # Forecast and Shift Length
 future_hours = st.sidebar.slider("Forecast Hours Ahead", min_value=1, max_value=12, value=3)
 shift_length = st.sidebar.slider("Shift Length (hours)", min_value=4, max_value=12, value=8)
@@ -125,8 +128,17 @@ with st.expander("📦 AFE Volume and Staffing Recommendations", expanded=False)
 
 # Align timestamps if needed
 afe_df["timestamp"] = pd.date_range(start=start_date, periods=len(afe_df), freq="H")
-combined_staffing = pd.merge(staffing_df, afe_df[["timestamp", "Recommended Staffers"]], on="timestamp", how="left")
-combined_staffing["Total Staffers"] = combined_staffing["recommended_staff"] + combined_staffing["Recommended Staffers"]
+
+# Merge Dock + AFE Staffing
+combined_staffing = pd.merge(
+    staffing_df,
+    afe_df[["timestamp", "Recommended Staffers"]],
+    on="timestamp",
+    how="left"
+)
+combined_staffing["Total Staffers"] = (
+    combined_staffing["recommended_staff"] + combined_staffing["Recommended Staffers"]
+)
 
 # Display Combined Staffing Chart
 with st.expander("📊 Total Staffing: Dock + AFE", expanded=False):
