@@ -133,7 +133,9 @@ cost_df = simulate_staffing_cost(staffing_df, hourly_rate)
 
 with st.expander("💰 Staffing Cost Simulation", expanded=False):
     st.dataframe(cost_df[['timestamp', 'recommended_staff', 'hourly_cost']])
-    st.metric("Total Staffing Cost", f"${cost_df['total_cost'].iloc[0]:,.2f}")
+    total_staffing_cost = cost_df['hourly_cost'].sum()
+    st.metric("Total Staffing Cost", f"${total_staffing_cost:,.2f}")
+
 
 with st.expander("📊 Cost vs. Staffing Over Time", expanded=False):
     cost_chart_type = st.radio("Chart Type for Cost vs. Staffing", ["Line Chart", "Bar Chart"])
