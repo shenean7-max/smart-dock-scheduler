@@ -1,15 +1,29 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from src.ingest import load_dock_metrics
 from src.forecast import forecast_truck_arrivals
 from src.optimize import recommend_staffing
 from src.cost import simulate_staffing_cost, simulate_optimized_cost
 
-# Load data
-df = load_dock_metrics("data/raw/dock_metrics.csv")
-
 # Sidebar Controls
 st.sidebar.header("🔧 Dashboard Controls")
+afe_productivity = st.sidebar.slider("AFE Units per Staffer", min_value=50, max_value=200, value=100)
+
+# Simulate hourly AFE volume
+hours = [f"{h}:00" for h in range(8, 20)]
+afe_volume = np.random.randint(500, 1500, size=len(hours))
+
+afe_df = pd.DataFrame({
+    "Hour": hours,
+    "AFE Volume": afe_volume
+})
+
+# Calculate AFE Staffing
+afe_df["Recommended Staffers"] = afe_df["AFE Volume"].apply(lambda v: int(np.ceil(v / afe_productivity)))
+
+# Load data
+df = load_dock_metrics("data/raw/dock_metrics.csv")
 
 # Labor Share Filters
 min_labor = st.sidebar.slider("Minimum Labor Share", min_value=0.0, max_value=1.0, value=0.3)
@@ -68,8 +82,31 @@ with st.expander("📉 Optimized Staffing Cost Simulation", expanded=False):
 st.title("Smart Dock Scheduler Dashboard")
 
 # Historical Metrics
-st.subheader("📊 Historical Dock Metrics")
-st.dataframe(filtered_df)
+with st.expander("📊 Historical Dock Metrics", expanded=False):
+    st.dataframe(filtered_df)
+
+# Display AFE Staffing Section
+with st.expander("📦 AFE Volume and Staffing Recommendations", expanded=False):
+    st.dataframe(afe_df)
+
+afe_chart_type = st.radio("Chart Type for AFE Staffing", ["Line Chart", "Bar Chart"])
+afe_chart_data = afe_df.set_index("Hour")[["Recommended Staffers"]]
+
+if afe_chart_type == "Line Chart":
+    st.line_chart(afe_chart_data)
+else:
+    st.bar_chart(afe_chart_data)
+
+# Align timestamps if needed
+afe_df["timestamp"] = pd.date_range(start=start_date, periods=len(afe_df), freq="H")
+combined_staffing = pd.merge(staffing_df, afe_df[["timestamp", "Recommended Staffers"]], on="timestamp", how="left")
+combined_staffing["Total Staffers"] = combined_staffing["recommended_staff"] + combined_staffing["Recommended Staffers"]
+
+# Display Combined Staffing Chart
+with st.expander("📊 Total Staffing: Dock + AFE", expanded=False):
+    st.line_chart(combined_staffing.set_index("timestamp")[["Total Staffers"]])
+
+
 
 # Convert filtered historical metrics to CSV
 historical_csv = filtered_df.to_csv(index=False).encode('utf-8')
@@ -116,9 +153,9 @@ st.download_button(
 cost_df = simulate_staffing_cost(staffing_df, hourly_rate)
 
 # Add Export for Cost Data
-st.subheader("💰 Staffing Cost Simulation")
-st.dataframe(cost_df[['timestamp', 'recommended_staff', 'hourly_cost']])
-st.metric(label="Total Staffing Cost", value=f"${cost_df['total_cost'].iloc[0]:,.2f}")
+with st.expander("💰 Staffing Cost Simulation", expanded=False):
+    st.dataframe(cost_df[['timestamp', 'recommended_staff', 'hourly_cost']])
+    st.metric(label="Total Staffing Cost", value=f"${cost_df['total_cost'].iloc[0]:,.2f}")
 
 # 📊 Cost vs. Staffing Chart
 with st.expander("📊 Cost vs. Staffing Over Time", expanded=False):
@@ -197,12 +234,12 @@ combined_df = pd.concat([
 ])
 
 # Display Alerts
-st.subheader("⚠️ Understaffed Hours Alert")
-if understaffed_hours.empty:
-    st.success("All forecasted hours are adequately staffed.")
-else:
-    st.warning(f"{len(understaffed_hours)} hour(s) may be understaffed based on current labor share and shift length.")
-    st.dataframe(understaffed_hours[['timestamp', 'predicted_truck_arrivals', 'recommended_staff']])
+with st.expander("⚠️ Understaffed Hours Alert", expanded=False):
+    if understaffed_hours.empty:
+        st.success("All forecasted hours are adequately staffed.")
+    else:
+        st.warning(f"{len(understaffed_hours)} hour(s) may be understaffed based on current labor share and shift length.")
+        st.dataframe(understaffed_hours[['timestamp', 'predicted_truck_arrivals', 'recommended_staff']])
 
 # Convert understaffed alerts to CSV
 alerts_csv = understaffed_hours[['timestamp', 'predicted_truck_arrivals', 'recommended_staff']].to_csv(index=False).encode('utf-8')
