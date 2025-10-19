@@ -54,6 +54,12 @@ if filtered_df.empty:
 
 forecast_df = forecast_truck_arrivals(filtered_df, future_hours=future_hours)
 
+# Set a default labor share value since labor share sliders were removed
+avg_labor_share = 0.8  # or any value that makes sense for your model
+
+# Generate staffing recommendations
+staffing_df = recommend_staffing(forecast_df, avg_labor_share, shift_length=shift_length)
+
 # Compare actual dock staffing to recommended
 actual_dock_headcount = staffing_df["recommended_staff"].sum()
 service_level = actual_dock_headcount / recommended_dock_headcount
