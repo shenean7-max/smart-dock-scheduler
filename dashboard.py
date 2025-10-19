@@ -8,6 +8,7 @@ from src.cost import simulate_staffing_cost
 
 # ---------------- Sidebar Controls ----------------
 st.sidebar.header("🔧 Dashboard Controls")
+avg_labor_share = st.sidebar.slider("Average Labor Share", min_value=0.1, max_value=1.0, value=0.8)
 
 # AFE productivity slider: affects staffing calculation
 afe_productivity = st.sidebar.slider("AFE Units per Staffer", min_value=50, max_value=400, value=100)
@@ -55,7 +56,7 @@ if filtered_df.empty:
 
 # ---------------- Forecast and Staffing ----------------
 forecast_df = forecast_truck_arrivals(filtered_df, future_hours=future_hours)
-staffing_df = recommend_staffing(forecast_df, shift_length=shift_length)
+staffing_df = recommend_staffing(forecast_df, avg_labor_share=avg_labor_share, shift_length=shift_length)
 
 # Calculate actual headcount and service level
 actual_dock_headcount = staffing_df["recommended_staff"].sum()
