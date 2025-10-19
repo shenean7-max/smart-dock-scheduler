@@ -12,14 +12,15 @@ A data-driven dashboard for optimizing ship dock staffing at Amazon Fulfillment 
 
 ## 📊 Features
 
-- **Forecasting**: Predict truck arrivals using linear regression  
-- **Staffing Recommendations**: Suggest optimal labor levels based on forecasted workload  
-- **AFE Staffing Module**: Simulates volume from the Amazon Fulfillment Environment and recommends headcount based on productivity sliders  
-- **Combined Staffing View**: Merges dock and AFE staffing for total labor planning  
-- **Cost Simulation**: Compare actual vs. optimized staffing costs  
-- **Scenario Modeling**: Toggle between presets to explore operational trade-offs  
-- **Service Level Impact**: Visualize how staffing affects throughput and delay risk  
-- **Export Options**: Download charts and metrics for reporting
+- **📈 Forecasting**: Predict truck arrivals using linear regression  
+- **🧮 Staffing Recommendations**: Suggest optimal labor levels based on forecasted workload and labor share  
+- **📦 AFE Staffing Module**: Simulate Amazon Fulfillment Environment volume and adjust productivity sliders  
+- **🔗 Combined Staffing View**: Merge dock and AFE staffing for total labor planning  
+- **💰 Cost Simulation**: Calculate hourly and total staffing costs with exportable breakdowns  
+- **⚠️ Understaffed Alerts**: Flag hours where staffing falls short of forecasted demand  
+- **🎯 Service Level Metric**: Visual delta comparison against target threshold with color-coded feedback  
+- **📤 Export Options**: Download historical metrics, forecasts, staffing plans, and alerts as CSV  
+- **📊 Chart Toggles**: Switch between line and bar charts across modules for flexible visualization
 
 ---
 
@@ -56,9 +57,9 @@ A data-driven dashboard for optimizing ship dock staffing at Amazon Fulfillment 
 
 ## 🧭 Project Reflection
 
-Building Smart Dock Scheduler taught me how to translate operational challenges into data-driven solutions. From forecasting truck arrivals to simulating cost impact, I focused on usability, scenario modeling, and recruiter-grade polish. Every feature—from export buttons to service level analysis—was designed to bridge insight and action.
+This iteration deepened my understanding of modular design, user-centric UI, and operational modeling. I refined cost logic, added visual performance feedback, and ensured every feature—from alerts to exports—serves real-world decision-making. The dashboard now reflects not just technical fluency, but product thinking and recruiter-grade polish.
 
-This project reflects my passion for smart infrastructure, ethical tech deployment, and building tools that make real-world decisions easier.
+Smart Dock Scheduler embodies my passion for smart infrastructure, ethical tech deployment, and building tools that make complex decisions intuitive.
 
 ## 🤝 Contributing
 
