@@ -13,6 +13,11 @@ def forecast_truck_arrivals(df: pd.DataFrame, future_hours: int = 3) -> pd.DataF
     Returns:
         pd.DataFrame: DataFrame with predicted truck arrivals.
     """
+    if df.empty or len(df) < 2:
+        raise ValueError("Insufficient data to generate forecast.")
+
+    df = df.copy()
+
     # Convert timestamps to numeric values (hours since start)
     df['time_numeric'] = (df['timestamp'] - df['timestamp'].min()).dt.total_seconds() / 3600
 
