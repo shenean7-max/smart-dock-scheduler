@@ -45,14 +45,13 @@ shift_length = st.sidebar.slider("Shift Length (hours)", min_value=4, max_value=
 
 # Hourly Rate
 hourly_rate = st.sidebar.slider("Hourly Rate per Staff ($)", min_value=15.0, max_value=50.0, value=25.0)
-
 filtered_df = df[df['timestamp'].dt.date >= start_date]
-
 
 # Forecast
 if filtered_df.empty:
-    st.warning("No data available for the selected filters. Please adjust the date or labor share range.")
+    st.warning("No data available for the selected date range. Please adjust the start date.")
     st.stop()
+
 forecast_df = forecast_truck_arrivals(filtered_df, future_hours=future_hours)
 
 # Compare actual dock staffing to recommended
@@ -69,24 +68,6 @@ st.metric("Estimated Service Level", f"{service_level:.2%}")
 # Identify understaffed hours
 staffing_df['understaffed'] = staffing_df['recommended_staff'] < staffing_df['predicted_truck_arrivals']
 understaffed_hours = staffing_df[staffing_df['understaffed']]
-
-# 🎛️ Scenario Presets for Labor Share Optimization
-preset = st.selectbox("Choose a Staffing Strategy", ["Custom", "Aggressive Savings", "Balanced Ops", "High Coverage"])
-
-if preset == "Aggressive Savings":
-    optimized_labor_share = 0.6
-elif preset == "Balanced Ops":
-    optimized_labor_share = 0.8
-elif preset == "High Coverage":
-    optimized_labor_share = 1.0
-else:
-    optimized_labor_share = st.slider("Optimized Labor Share", min_value=0.1, max_value=1.0, value=0.8)
-
-optimized_cost_df = simulate_optimized_cost(staffing_df, hourly_rate, optimized_labor_share)
-
-with st.expander("📉 Optimized Staffing Cost Simulation", expanded=False):
-    st.dataframe(optimized_cost_df[['timestamp', 'recommended_staff', 'optimized_staff', 'optimized_cost', 'savings']])
-    st.metric(label="Total Cost Savings", value=f"${optimized_cost_df['total_savings'].iloc[0]:,.2f}")
 
 # Title
 st.title("Smart Dock Scheduler Dashboard")
