@@ -33,14 +33,6 @@ recommended_dock_headcount = int(np.ceil(total_afe_volume / target_ppr))
 # Load data
 df = load_dock_metrics("data/raw/dock_metrics.csv")
 
-# Labor Share Filters as Percentages
-min_labor_pct = st.sidebar.slider("Minimum Labor Share (%)", min_value=0, max_value=100, value=30)
-max_labor_pct = st.sidebar.slider("Maximum Labor Share (%)", min_value=0, max_value=100, value=100)
-
-# Convert to fraction for filtering
-min_labor = min_labor_pct / 100
-max_labor = max_labor_pct / 100
-
 # Calculate Headcount Range
 min_headcount = int(starting_headcount * min_labor)
 max_headcount = int(starting_headcount * max_labor)
