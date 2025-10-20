@@ -29,11 +29,16 @@ A data-driven dashboard for optimizing ship dock staffing at Amazon Fulfillment 
 <pre><code>git clone https://github.com/shenean7-max/smart-dock-scheduler.git
 cd smart-dock-scheduler</code></pre>
 2. Create and activate a virtual environment
-<pre><code>python -m venv venv
-On Windows
-.\venv\Scripts\activate
-On macOS/Linux
-source venv/bin/activate</code></pre>
+<pre><code>python -m venv venv</code></pre>
+
+**On Windows:**
+
+<pre><code>.\venv\Scripts\activate</code></pre>
+
+**On macOS/Linux:**
+
+<pre><code>source venv/bin/activate</code></pre>
+
 3. Install dependencies
 <pre><code>pip install -r requirements.txt</code></pre>
 4. Launch the dashboard
